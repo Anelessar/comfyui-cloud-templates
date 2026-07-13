@@ -1,0 +1,460 @@
+{
+  "id": "1783961678396",
+  "name": "image",
+  "createdAt": "2026-07-13T16:54:38.396Z",
+  "version": "1.0.0",
+  "app": "comfyui",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "Comfy-Org/Qwen-Image-Edit_ComfyUI - qwen_image_edit_2511_bf16.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+      "type": "checkpoint",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/Qwen-Image-Edit_ComfyUI",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/checkpoints",
+      "customFilename": "qwen_image_edit_2511_bf16.safetensors",
+      "fileSize": 38968.11634063721,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI"
+    },
+    {
+      "name": "lightx2v/Qwen-Image-Edit-2511-Lightning - Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "url": "https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning/resolve/main/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "type": "lora",
+      "platform": "huggingface",
+      "modelId": "lightx2v/Qwen-Image-Edit-2511-Lightning",
+      "author": "lightx2v",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/loras",
+      "customFilename": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "fileSize": 810.2496109008789,
+      "sourceUrl": "https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning"
+    },
+    {
+      "name": "Comfy-Org/Qwen-Image_ComfyUI - qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "type": "clip",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/Qwen-Image_ComfyUI",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/clip",
+      "customFilename": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "fileSize": 8949.919395446777,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI"
+    },
+    {
+      "name": "Comfy-Org/Qwen-Image_ComfyUI - qwen_image_vae.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+      "type": "vae",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/Qwen-Image_ComfyUI",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/vae",
+      "customFilename": "qwen_image_vae.safetensors",
+      "fileSize": 242.04849815368652,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI"
+    },
+    {
+      "name": "Comfy-Org/flux1-dev - flux1-dev.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev.safetensors",
+      "type": "checkpoint",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/flux1-dev",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/checkpoints",
+      "customFilename": "flux1-dev.safetensors",
+      "fileSize": 22700.245429992676,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/flux1-dev"
+    },
+    {
+      "name": "Comfy-Org/USO_1.0_Repackaged - uso-flux1-dit-lora-v1.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/USO_1.0_Repackaged/resolve/main/split_files/loras/uso-flux1-dit-lora-v1.safetensors",
+      "type": "lora",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/USO_1.0_Repackaged",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/loras",
+      "customFilename": "uso-flux1-dit-lora-v1.safetensors",
+      "fileSize": 456.03543853759766,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/USO_1.0_Repackaged"
+    },
+    {
+      "name": "Comfy-Org/USO_1.0_Repackaged - uso-flux1-projector-v1.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/USO_1.0_Repackaged/resolve/main/split_files/model_patches/uso-flux1-projector-v1.safetensors",
+      "type": "model_patches",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/USO_1.0_Repackaged",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/model_patches",
+      "customFilename": "uso-flux1-projector-v1.safetensors",
+      "fileSize": 20.549964904785156,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/USO_1.0_Repackaged"
+    },
+    {
+      "name": "Comfy-Org/sigclip_vision_384 - sigclip_vision_patch14_384.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/sigclip_vision_384/resolve/main/sigclip_vision_patch14_384.safetensors",
+      "type": "clip_vision",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/sigclip_vision_384",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/clip_vision",
+      "customFilename": "sigclip_vision_patch14_384.safetensors",
+      "fileSize": 816.8274307250977,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/sigclip_vision_384"
+    },
+    {
+      "name": "lokCX/4x-Ultrasharp - 4x-UltraSharp.pth",
+      "url": "https://huggingface.co/lokCX/4x-Ultrasharp/resolve/main/4x-UltraSharp.pth",
+      "type": "upscaler",
+      "platform": "huggingface",
+      "modelId": "lokCX/4x-Ultrasharp",
+      "author": "lokCX",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/upscale_models",
+      "customFilename": "4x-UltraSharp.pth",
+      "fileSize": 63.85989952087402,
+      "sourceUrl": "https://huggingface.co/lokCX/4x-Ultrasharp"
+    },
+    {
+      "name": "outfly/face_yolov8m - face_yolov8m.pt",
+      "url": "https://huggingface.co/outfly/face_yolov8m/resolve/main/face_yolov8m.pt",
+      "type": "ultralytics",
+      "platform": "huggingface",
+      "modelId": "outfly/face_yolov8m",
+      "author": "outfly",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/ultralytics",
+      "customFilename": "face_yolov8m.pt",
+      "fileSize": 49.615878105163574,
+      "sourceUrl": "https://huggingface.co/outfly/face_yolov8m"
+    },
+    {
+      "name": "fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA - qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "url": "https://huggingface.co/fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA/resolve/main/qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "type": "lora",
+      "platform": "huggingface",
+      "modelId": "fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA",
+      "author": "fal",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/loras",
+      "customFilename": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "fileSize": 281.4680938720703,
+      "sourceUrl": "https://huggingface.co/fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA"
+    },
+    {
+      "name": "Comfy-Org/z_image_turbo - z_image_turbo_bf16.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/diffusion_models/z_image_turbo_bf16.safetensors",
+      "type": "diffusion_models",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/z_image_turbo",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/diffusion_models",
+      "customFilename": "z_image_turbo_bf16.safetensors",
+      "fileSize": 11739.603424072266,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/z_image_turbo"
+    },
+    {
+      "name": "Comfy-Org/z_image_turbo - qwen_3_4b.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors",
+      "type": "text_encoders",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/z_image_turbo",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/text_encoders",
+      "customFilename": "qwen_3_4b.safetensors",
+      "fileSize": 7672.292755126953,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/z_image_turbo"
+    },
+    {
+      "name": "Osrivers/flux_vae.safetensors - flux_vae.safetensors",
+      "url": "https://huggingface.co/Osrivers/flux_vae.safetensors/resolve/main/flux_vae.safetensors",
+      "type": "vae",
+      "platform": "huggingface",
+      "modelId": "Osrivers/flux_vae.safetensors",
+      "author": "Osrivers",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/vae",
+      "customFilename": "flux_vae.safetensors",
+      "fileSize": 319.771183013916,
+      "sourceUrl": "https://huggingface.co/Osrivers/flux_vae.safetensors"
+    },
+    {
+      "name": "Comfy-Org/Wan_2.2_ComfyUI_Repackaged - umt5_xxl_fp16.safetensors",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp16.safetensors",
+      "type": "text_encoders",
+      "platform": "huggingface",
+      "modelId": "Comfy-Org/Wan_2.2_ComfyUI_Repackaged",
+      "author": "Comfy-Org",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/text_encoders",
+      "customFilename": "umt5_xxl_fp16.safetensors",
+      "fileSize": 10839.843163490295,
+      "sourceUrl": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
+    },
+    {
+      "name": "krea/Krea-2-Turbo - turbo.safetensors",
+      "url": "https://huggingface.co/krea/Krea-2-Turbo/resolve/main/turbo.safetensors",
+      "type": "checkpoint",
+      "platform": "huggingface",
+      "modelId": "krea/Krea-2-Turbo",
+      "author": "krea",
+      "requiresAuth": false,
+      "destinationPath": "/workspace/ComfyUI/models/checkpoints",
+      "customFilename": "turbo.safetensors",
+      "fileSize": 25065.7392578125,
+      "sourceUrl": "https://huggingface.co/krea/Krea-2-Turbo"
+    }
+  ],
+  "customNodes": [
+    {
+      "id": "comfyui-gguf",
+      "title": "ComfyUI-GGUF",
+      "author": "city96",
+      "description": "GGUF Quantization support for native ComfyUI models\nThis is currently very much WIP. These custom nodes provide support for model files stored in the GGUF format popularized by llama.cpp.\nWhile quantization wasn't feasible for regular UNET models (conv2d), transformer/DiT models such as flux seem less affected by quantization. This allows running it in much lower bits per weight variable bitrate quants on low-end GPUs.",
+      "reference": "https://github.com/city96/ComfyUI-GGUF",
+      "files": [
+        "https://github.com/city96/ComfyUI-GGUF"
+      ],
+      "install_type": "git-clone",
+      "preemptions": [
+        "CLIPLoaderGGUF",
+        "DualCLIPLoaderGGUF",
+        "TripleCLIPLoaderGGUF",
+        "UnetLoaderGGUF",
+        "UnetLoaderGGUFAdvanced"
+      ],
+      "selected": false
+    },
+    {
+      "id": "comfyui-impact-pack",
+      "title": "ComfyUI Impact Pack",
+      "author": "Dr.Lt.Data",
+      "description": "This node pack offers various detector nodes and detailer nodes that allow you to configure a workflow that automatically enhances facial details. And provide iterative upscaler.\nNOTE: To use the UltralyticsDetectorProvider, you must install the 'ComfyUI Impact Subpack' separately.",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Impact-Pack",
+      "files": [
+        "https://github.com/ltdrdata/ComfyUI-Impact-Pack"
+      ],
+      "install_type": "git-clone",
+      "preemptions": [
+        "SAMLoader"
+      ],
+      "selected": false
+    },
+    {
+      "id": "rgthree",
+      "title": "rgthree's ComfyUI Nodes",
+      "author": "rgthree",
+      "description": "Nodes: Seed, Reroute, Context, Lora Loader Stack, Context Switch, Fast Muter. These custom nodes helps organize the building of complex workflows.",
+      "reference": "https://github.com/rgthree/rgthree-comfy",
+      "files": [
+        "https://github.com/rgthree/rgthree-comfy"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "id": "comfyui_controlnet_aux",
+      "title": "ComfyUI's ControlNet Auxiliary Preprocessors",
+      "author": "Fannovel16",
+      "description": "Plug-and-play ComfyUI node sets for making ControlNet hint images.",
+      "reference": "https://github.com/Fannovel16/comfyui_controlnet_aux",
+      "files": [
+        "https://github.com/Fannovel16/comfyui_controlnet_aux"
+      ],
+      "install_type": "git-clone",
+      "preemptions": [
+        "AIO_Preprocessor",
+        "AnimalPosePreprocessor",
+        "AnimeFace_SemSegPreprocessor",
+        "AnimeLineArtPreprocessor",
+        "BAE-NormalMapPreprocessor",
+        "BinaryPreprocessor",
+        "CannyEdgePreprocessor",
+        "ColorPreprocessor",
+        "DSINE-NormalMapPreprocessor",
+        "DWPreprocessor",
+        "DensePosePreprocessor",
+        "DepthAnythingPreprocessor",
+        "DiffusionEdge_Preprocessor",
+        "FacialPartColoringFromPoseKps",
+        "FakeScribblePreprocessor",
+        "HEDPreprocessor",
+        "HintImageEnchance",
+        "ImageGenResolutionFromImage",
+        "ImageGenResolutionFromLatent",
+        "ImageIntensityDetector",
+        "ImageLuminanceDetector",
+        "InpaintPreprocessor",
+        "LeReS-DepthMapPreprocessor",
+        "LineArtPreprocessor",
+        "LineartStandardPreprocessor",
+        "M-LSDPreprocessor",
+        "Manga2Anime_LineArt_Preprocessor",
+        "MaskOptFlow",
+        "MediaPipe-FaceMeshPreprocessor",
+        "MeshGraphormer-DepthMapPreprocessor",
+        "MiDaS-DepthMapPreprocessor",
+        "MiDaS-NormalMapPreprocessor",
+        "OneFormer-ADE20K-SemSegPreprocessor",
+        "OneFormer-COCO-SemSegPreprocessor",
+        "OpenposePreprocessor",
+        "PiDiNetPreprocessor",
+        "PixelPerfectResolution",
+        "SAMPreprocessor",
+        "SavePoseKpsAsJsonFile",
+        "ScribblePreprocessor",
+        "Scribble_XDoG_Preprocessor",
+        "SemSegPreprocessor",
+        "ShufflePreprocessor",
+        "TEEDPreprocessor",
+        "TilePreprocessor",
+        "UniFormer-SemSegPreprocessor",
+        "Unimatch_OptFlowPreprocessor",
+        "Zoe-DepthMapPreprocessor",
+        "Zoe_DepthAnythingPreprocessor"
+      ],
+      "selected": false
+    },
+    {
+      "id": "advancedliveportrait",
+      "title": "ComfyUI-AdvancedLivePortrait",
+      "author": "PowerHouseMan",
+      "description": "AdvancedLivePortrait with Facial expression editor",
+      "reference": "https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait",
+      "files": [
+        "https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "id": "kjnodes",
+      "title": "KJNodes for ComfyUI",
+      "author": "kijai",
+      "description": "Various quality of life -nodes for ComfyUI, mostly just visual stuff to improve usability.",
+      "reference": "https://github.com/kijai/ComfyUI-KJNodes",
+      "files": [
+        "https://github.com/kijai/ComfyUI-KJNodes"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "id": "florence2-kijai",
+      "title": "ComfyUI-Florence2",
+      "author": "kijai",
+      "description": "Nodes to use Florence2 VLM for image vision tasks: object detection, captioning, segmentation and ocr",
+      "reference": "https://github.com/kijai/ComfyUI-Florence2",
+      "files": [
+        "https://github.com/kijai/ComfyUI-Florence2"
+      ],
+      "install_type": "git-clone",
+      "preemptions": [
+        "DownloadAndLoadFlorence2Lora",
+        "DownloadAndLoadFlorence2Model",
+        "Florence2ModelLoader",
+        "Florence2Run"
+      ],
+      "selected": false
+    },
+    {
+      "id": "gguf",
+      "title": "gguf",
+      "author": "calcuis",
+      "description": "gguf node for comfyui",
+      "reference": "https://github.com/calcuis/gguf",
+      "files": [
+        "https://github.com/calcuis/gguf"
+      ],
+      "install_type": "git-clone",
+      "preemptions": [
+        "LoaderGGUF",
+        "ClipLoaderGGUF",
+        "DualClipLoaderGGUF",
+        "TripleClipLoaderGGUF",
+        "LoaderGGUFAdvanced",
+        "GGUFSave"
+      ],
+      "selected": false
+    },
+    {
+      "id": "comfyui-custom-scripts",
+      "title": "ComfyUI-Custom-Scripts",
+      "author": "pythongosssss",
+      "description": "Enhancements & experiments for ComfyUI, mostly focusing on UI features",
+      "reference": "https://github.com/pythongosssss/ComfyUI-Custom-Scripts",
+      "files": [
+        "https://github.com/pythongosssss/ComfyUI-Custom-Scripts"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "title": "ComfyUI-qwenmultiangle",
+      "author": "jtydhr88",
+      "description": "A ComfyUI node for 3D camera angle control, outputs angle prompts for multi-angle image generation",
+      "reference": "https://github.com/jtydhr88/ComfyUI-qwenmultiangle",
+      "files": [
+        "https://github.com/jtydhr88/ComfyUI-qwenmultiangle"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "title": "ComfyUI-MultiGPU",
+      "author": "pollockjj",
+      "description": "This extension adds CUDA device selection to supported loader nodes in ComfyUI. By monkey-patching ComfyUI’s memory management, each model component (like UNet, Clip, or VAE) can be loaded on a specific GPU. Examples included are multi-GPU workflows for SDXL, FLUX, LTXVideo, and Hunyuan Video for both standard and GGUF loader nodes.",
+      "reference": "https://github.com/pollockjj/ComfyUI-MultiGPU",
+      "files": [
+        "https://github.com/pollockjj/ComfyUI-MultiGPU"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "id": "comfyui_memory_cleanup",
+      "title": "Comfyui-Memory_Cleanup",
+      "author": "LAOGOU-666",
+      "description": "A ComfyUI extension that provides nodes for memory cleanup, including VRAM and RAM cleanup functions to optimize ComfyUI performance during long running workflows.",
+      "reference": "https://github.com/LAOGOU-666/Comfyui-Memory_Cleanup",
+      "files": [
+        "https://github.com/LAOGOU-666/Comfyui-Memory_Cleanup"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "title": "ComfyUI_HuggingFace_Downloader",
+      "author": "jnxmx",
+      "description": "Nodes for auto download models from Hugging Face using their filenames as part of workflows",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader",
+      "files": [
+        "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    },
+    {
+      "id": "manager",
+      "title": "ComfyUI-Manager",
+      "author": "Dr.Lt.Data",
+      "description": "ComfyUI-Manager itself is also a custom node.",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager",
+      "files": [
+        "https://github.com/ltdrdata/ComfyUI-Manager"
+      ],
+      "install_type": "git-clone",
+      "selected": false
+    }
+  ]
+}
