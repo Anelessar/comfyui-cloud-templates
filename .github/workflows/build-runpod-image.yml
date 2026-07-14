@@ -6,10 +6,7 @@ on:
     branches: [main]
     paths:
       - "common/**"
-      - "configs/**"
       - "providers/runpod/**"
-      - "providers/vastai/**"
-      - "tests/**"
       - ".github/workflows/build-runpod-image.yml"
 
 permissions:
@@ -36,7 +33,7 @@ jobs:
           for file in common/*.sh providers/vastai/*.sh providers/runpod/*.sh; do
             bash -n "$file"
           done
-          for file in configs/*.json; do
+          find configs -type f -name '*.json' -print0 | while IFS= read -r -d '' file; do
             python -m json.tool "$file" >/dev/null
             python common/install_from_config.py \
               --config "$file" \

@@ -1,0 +1,45 @@
+{
+  "name": "qwen-image-edit-2511",
+  "description": "Qwen Image Edit 2511 with the four-step Lightning LoRA.",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "Qwen Image Edit 2511 BF16",
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/diffusion_models",
+      "customFilename": "qwen_image_edit_2511_bf16.safetensors",
+      "fileSize": 38968.11634063721
+    },
+    {
+      "name": "Qwen Image Edit 2511 Lightning four-step LoRA",
+      "url": "https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning/resolve/main/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/loras",
+      "customFilename": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "fileSize": 810.2496109008789
+    },
+    {
+      "name": "Qwen 2.5 VL 7B FP8 text encoder",
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/text_encoders",
+      "customFilename": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "fileSize": 8949.919395446777
+    },
+    {
+      "name": "Qwen Image VAE",
+      "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/vae",
+      "customFilename": "qwen_image_vae.safetensors",
+      "fileSize": 242.04849815368652
+    }
+  ],
+  "customNodes": [
+    {
+      "title": "ComfyUI Hugging Face Downloader",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+    },
+    {
+      "title": "ComfyUI Manager",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager"
+    }
+  ]
+}

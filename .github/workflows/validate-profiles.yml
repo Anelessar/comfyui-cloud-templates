@@ -1,0 +1,42 @@
+name: Validate profiles
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "configs/**"
+      - "common/install_from_config.py"
+      - "tools/profile_builder.py"
+      - "tests/**"
+      - ".github/workflows/validate-profiles.yml"
+  pull_request:
+    paths:
+      - "configs/**"
+      - "common/install_from_config.py"
+      - "tools/profile_builder.py"
+      - "tests/**"
+      - ".github/workflows/validate-profiles.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate code and every JSON profile
+        run: |
+          python -m unittest discover -s tests -v
+          python -m py_compile common/install_from_config.py tools/profile_builder.py
+          find configs -type f -name '*.json' -print0 | while IFS= read -r -d '' file; do
+            python -m json.tool "$file" >/dev/null
+            python common/install_from_config.py \
+              --config "$file" \
+              --comfy-dir /workspace/ComfyUI \
+              --validate-only
+          done

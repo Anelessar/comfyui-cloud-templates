@@ -1,0 +1,24 @@
+{
+  "name": "krea-2-turbo",
+  "description": "The self-contained Krea 2 Turbo checkpoint.",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "Krea 2 Turbo checkpoint",
+      "url": "https://huggingface.co/krea/Krea-2-Turbo/resolve/main/turbo.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/checkpoints",
+      "customFilename": "turbo.safetensors",
+      "fileSize": 25065.7392578125
+    }
+  ],
+  "customNodes": [
+    {
+      "title": "ComfyUI Hugging Face Downloader",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+    },
+    {
+      "title": "ComfyUI Manager",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager"
+    }
+  ]
+}

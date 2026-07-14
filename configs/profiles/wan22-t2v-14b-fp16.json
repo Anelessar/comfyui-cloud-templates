@@ -1,0 +1,45 @@
+{
+  "name": "wan22-t2v-14b-fp16",
+  "description": "Complete Wan 2.2 14B text-to-video pair with high- and low-noise experts.",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "Wan 2.2 T2V high-noise 14B FP16 expert",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_high_noise_14B_fp16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/diffusion_models",
+      "customFilename": "wan2.2_t2v_high_noise_14B_fp16.safetensors",
+      "sizeBytes": 28577095592
+    },
+    {
+      "name": "Wan 2.2 T2V low-noise 14B FP16 expert",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/diffusion_models/wan2.2_t2v_low_noise_14B_fp16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/diffusion_models",
+      "customFilename": "wan2.2_t2v_low_noise_14B_fp16.safetensors",
+      "fileSize": 27253.24210357666
+    },
+    {
+      "name": "UMT5 XXL FP16 text encoder",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/text_encoders",
+      "customFilename": "umt5_xxl_fp16.safetensors",
+      "fileSize": 10839.843163490295
+    },
+    {
+      "name": "Wan 2.1 VAE required by Wan 2.2 14B",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/vae",
+      "customFilename": "wan_2.1_vae.safetensors",
+      "sizeBytes": 253815318
+    }
+  ],
+  "customNodes": [
+    {
+      "title": "ComfyUI Hugging Face Downloader",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+    },
+    {
+      "title": "ComfyUI Manager",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager"
+    }
+  ]
+}

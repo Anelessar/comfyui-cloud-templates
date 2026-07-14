@@ -10,7 +10,14 @@ if [[ -z "${CONFIG_URL:-}" ]]; then
   case "${PROFILE}" in
     image) CONFIG_URL="${REPO_RAW_BASE}/configs/image.json" ;;
     video) CONFIG_URL="${REPO_RAW_BASE}/configs/video.json" ;;
-    *) echo "PROFILE must be image or video when CONFIG_URL is not set." >&2; exit 1 ;;
+    "") echo "Set PROFILE or CONFIG_URL." >&2; exit 1 ;;
+    *)
+      if [[ ! "${PROFILE}" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+        echo "PROFILE must contain only lowercase letters, digits, and hyphens." >&2
+        exit 1
+      fi
+      CONFIG_URL="${REPO_RAW_BASE}/configs/profiles/${PROFILE}.json"
+      ;;
   esac
 fi
 export CONFIG_URL STATE_DIR INSTALLER_PATH=/opt/comfyui-cloud/common/install_from_config.py

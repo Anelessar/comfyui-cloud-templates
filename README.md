@@ -16,10 +16,21 @@ defined by a JSON profile in `configs/`.
 
 ## Adding a workflow
 
-Create or replace one profile, for example:
+Ten reduced profiles are available under `configs/profiles/`. See the profile
+catalog in `configs/profiles/README.md` for their purpose and model size.
 
-```text
-configs/product-photo.json
+Create another profile with the included builder instead of copying model
+objects by hand:
+
+```bash
+python3 tools/profile_builder.py list configs/image.json
+python3 tools/profile_builder.py create \
+  configs/image.json \
+  configs/profiles/product-photo.json \
+  --name product-photo \
+  --models 1,2,3,4 \
+  --nodes 10 \
+  --with-discovery-tools
 ```
 
 Keep only the models and nodes required by that workflow. See
@@ -28,15 +39,15 @@ Keep only the models and nodes required by that workflow. See
 Then point `CONFIG_URL` to the new profile:
 
 ```text
-https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/product-photo.json
+https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/product-photo.json
 ```
 
 Provider scripts do not need to change.
 
-The current `image.json` and `video.json` profiles remain intentionally
-unchanged and are still large. Split them into workflow-specific profiles before
-regularly renting fresh GPUs. Tokens do not make large transfers substantially
-smaller; reducing the profile is the effective startup optimization.
+The top-level `image.json` and `video.json` files remain unchanged as source
+exports and are still large. They are not the recommended profiles for fresh,
+disposable GPUs. Tokens do not make large transfers substantially smaller;
+selecting one reduced workflow profile is the effective startup optimization.
 
 ## Vast.ai
 
@@ -65,6 +76,9 @@ Use:
 
 For disposable Pods without persistent storage, set the volume size to `0 GB`
 and size the container disk to the profile's model data plus 40–50 GB.
+
+Set `PROFILE` to any filename under `configs/profiles/` without `.json`, for
+example `PROFILE=z-image-turbo`. A direct `CONFIG_URL` remains supported.
 
 ## Logs and validation
 

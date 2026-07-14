@@ -1,0 +1,45 @@
+{
+  "name": "flux-uso",
+  "description": "FLUX.1 Dev with the USO identity customization model patch.",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "FLUX.1 Dev checkpoint",
+      "url": "https://huggingface.co/Comfy-Org/flux1-dev/resolve/main/flux1-dev.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/checkpoints",
+      "customFilename": "flux1-dev.safetensors",
+      "fileSize": 22700.245429992676
+    },
+    {
+      "name": "USO FLUX LoRA",
+      "url": "https://huggingface.co/Comfy-Org/USO_1.0_Repackaged/resolve/main/split_files/loras/uso-flux1-dit-lora-v1.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/loras",
+      "customFilename": "uso-flux1-dit-lora-v1.safetensors",
+      "fileSize": 456.03543853759766
+    },
+    {
+      "name": "USO FLUX projector",
+      "url": "https://huggingface.co/Comfy-Org/USO_1.0_Repackaged/resolve/main/split_files/model_patches/uso-flux1-projector-v1.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/model_patches",
+      "customFilename": "uso-flux1-projector-v1.safetensors",
+      "fileSize": 20.549964904785156
+    },
+    {
+      "name": "SigLIP vision encoder",
+      "url": "https://huggingface.co/Comfy-Org/sigclip_vision_384/resolve/main/sigclip_vision_patch14_384.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/clip_vision",
+      "customFilename": "sigclip_vision_patch14_384.safetensors",
+      "fileSize": 816.8274307250977
+    }
+  ],
+  "customNodes": [
+    {
+      "title": "ComfyUI Hugging Face Downloader",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+    },
+    {
+      "title": "ComfyUI Manager",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager"
+    }
+  ]
+}

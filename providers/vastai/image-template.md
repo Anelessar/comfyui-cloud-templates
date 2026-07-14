@@ -19,7 +19,8 @@ Those changes previously broke external access to a running Jupyter server.
 
 - Name: `ComfyUI Image Production`.
 - Visibility: `Private`.
-- Disk: model data from `configs/image.json` plus at least 40 GB.
+- Disk: model data from the selected `configs/profiles/*.json` file plus at
+  least 40 GB.
 - GPU: select according to the reduced workflow's requirements.
 - Port: add `8188/tcp` only when direct external ComfyUI access is required.
 
@@ -36,8 +37,11 @@ Then open `http://127.0.0.1:8188` locally.
 ```text
 PROVISIONING_SCRIPT=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/providers/vastai/provision.sh
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
-CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/image.json
+CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/qwen-image-edit-2511.json
 ```
+
+Copy the template for another image workflow and change only its name, disk
+size, GPU filters, and `CONFIG_URL` profile filename.
 
 Do not add `COMFY_VERSION` or `COMFY_PORT`. The version comes from
 `comfyuiVersion` in the JSON profile, and the default port is `8188`.

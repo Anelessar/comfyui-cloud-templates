@@ -1,5 +1,9 @@
 # Profile schema
 
+Ready-to-use workflow profiles are listed in `configs/profiles/README.md`. The
+top-level `image.json` and `video.json` files are retained as the original full
+AI Launcher exports, not as recommended disposable-instance profiles.
+
 Minimal structure:
 
 ```json
@@ -88,3 +92,38 @@ Dependencies are installed in this order:
 3. Optional `pip install -e` when only `pyproject.toml` or `setup.py` remains.
 
 A failure in the third optional step does not stop other nodes or models.
+
+## Build a profile from an export
+
+List the selectable entries:
+
+```bash
+python3 tools/profile_builder.py list configs/image.json
+```
+
+The command prints one-based model and custom-node numbers. Create a profile by
+selecting complete dependencies for one workflow:
+
+```bash
+python3 tools/profile_builder.py create \
+  configs/image.json \
+  configs/profiles/my-workflow.json \
+  --name my-workflow \
+  --models 1,2,3,4 \
+  --nodes 10 \
+  --with-discovery-tools
+```
+
+`--with-discovery-tools` adds ComfyUI Manager and ComfyUI Hugging Face
+Downloader when the source export contains them. It does not guess model
+dependencies. A LoRA, text encoder, VAE, or high/low-noise expert must stay with
+the base models required by the workflow.
+
+Validate the result before pushing it:
+
+```bash
+python3 common/install_from_config.py \
+  --config configs/profiles/my-workflow.json \
+  --comfy-dir /workspace/ComfyUI \
+  --validate-only
+```

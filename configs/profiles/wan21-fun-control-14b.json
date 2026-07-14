@@ -1,0 +1,61 @@
+{
+  "name": "wan21-fun-control-14b",
+  "description": "Wan 2.1 Fun Control 14B through ComfyUI WanVideoWrapper.",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "Wan 2.1 Fun Control 14B FP8",
+      "url": "https://huggingface.co/Kijai/WanVideo_comfy/resolve/main/Fun/Wan2.1-Fun-Control-14B_fp8_e4m3fn.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/diffusion_models",
+      "customFilename": "Wan2.1-Fun-Control-14B_fp8_e4m3fn.safetensors",
+      "fileSize": 15826.343963623047
+    },
+    {
+      "name": "UMT5 XXL FP16 text encoder",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/text_encoders",
+      "customFilename": "umt5_xxl_fp16.safetensors",
+      "fileSize": 10839.843163490295
+    },
+    {
+      "name": "Wan 2.1 VAE",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/vae",
+      "customFilename": "wan_2.1_vae.safetensors",
+      "sizeBytes": 253815318
+    },
+    {
+      "name": "Wan CLIP vision encoder",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/clip_vision/clip_vision_h.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/clip_vision",
+      "customFilename": "clip_vision_h.safetensors",
+      "fileSize": 1205.6535682678223
+    }
+  ],
+  "customNodes": [
+    {
+      "title": "ComfyUI WanVideoWrapper",
+      "reference": "https://github.com/kijai/ComfyUI-WanVideoWrapper"
+    },
+    {
+      "title": "KJNodes for ComfyUI",
+      "reference": "https://github.com/kijai/ComfyUI-KJNodes"
+    },
+    {
+      "title": "ComfyUI ControlNet Auxiliary Preprocessors",
+      "reference": "https://github.com/Fannovel16/comfyui_controlnet_aux"
+    },
+    {
+      "title": "ComfyUI Video Helper Suite",
+      "reference": "https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite"
+    },
+    {
+      "title": "ComfyUI Hugging Face Downloader",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+    },
+    {
+      "title": "ComfyUI Manager",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager"
+    }
+  ]
+}

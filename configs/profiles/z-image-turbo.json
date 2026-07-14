@@ -1,0 +1,38 @@
+{
+  "name": "z-image-turbo",
+  "description": "Z-Image Turbo with its Qwen 3 text encoder and FLUX VAE.",
+  "comfyuiVersion": "v0.27.0",
+  "models": [
+    {
+      "name": "Z-Image Turbo BF16",
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/diffusion_models/z_image_turbo_bf16.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/diffusion_models",
+      "customFilename": "z_image_turbo_bf16.safetensors",
+      "fileSize": 11739.603424072266
+    },
+    {
+      "name": "Qwen 3 4B text encoder",
+      "url": "https://huggingface.co/Comfy-Org/z_image_turbo/resolve/main/split_files/text_encoders/qwen_3_4b.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/text_encoders",
+      "customFilename": "qwen_3_4b.safetensors",
+      "fileSize": 7672.292755126953
+    },
+    {
+      "name": "FLUX VAE",
+      "url": "https://huggingface.co/Osrivers/flux_vae.safetensors/resolve/main/flux_vae.safetensors",
+      "destinationPath": "/workspace/ComfyUI/models/vae",
+      "customFilename": "flux_vae.safetensors",
+      "fileSize": 319.771183013916
+    }
+  ],
+  "customNodes": [
+    {
+      "title": "ComfyUI Hugging Face Downloader",
+      "reference": "https://github.com/jnxmx/ComfyUI_HuggingFace_Downloader"
+    },
+    {
+      "title": "ComfyUI Manager",
+      "reference": "https://github.com/ltdrdata/ComfyUI-Manager"
+    }
+  ]
+}
