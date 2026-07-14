@@ -11,7 +11,7 @@
 ## Environment variables
 
 ```text
-PROFILE=wan22-animate
+PROFILE=wan-video
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
 HF_TOKEN={{ RUNPOD_SECRET_huggingface_token }}
 CIVITAI_TOKEN={{ RUNPOD_SECRET_civitai_token }}

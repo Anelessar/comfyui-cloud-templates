@@ -1,6 +1,6 @@
 {
-  "name": "flux-uso",
-  "description": "FLUX.1 Dev with the USO identity customization model patch.",
+  "name": "flux",
+  "description": "FLUX image family with the USO identity customization components.",
   "comfyuiVersion": "v0.27.0",
   "models": [
     {

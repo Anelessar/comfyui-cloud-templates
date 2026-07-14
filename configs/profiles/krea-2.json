@@ -1,6 +1,6 @@
 {
-  "name": "krea-2-turbo",
-  "description": "The self-contained Krea 2 Turbo checkpoint.",
+  "name": "krea-2",
+  "description": "Krea 2 image family with the self-contained Turbo checkpoint.",
   "comfyuiVersion": "v0.27.0",
   "models": [
     {

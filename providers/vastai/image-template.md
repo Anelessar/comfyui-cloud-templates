@@ -37,11 +37,11 @@ Then open `http://127.0.0.1:8188` locally.
 ```text
 PROVISIONING_SCRIPT=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/providers/vastai/provision.sh
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
-CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/qwen-image-edit-2511.json
+CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/qwen-image.json
 ```
 
-Copy the template for another image workflow and change only its name, disk
-size, GPU filters, and `CONFIG_URL` profile filename.
+Copy the template for another image family and change only its name, disk size,
+GPU filters, and `CONFIG_URL` profile filename.
 
 Do not add `COMFY_VERSION` or `COMFY_PORT`. The version comes from
 `comfyuiVersion` in the JSON profile, and the default port is `8188`.

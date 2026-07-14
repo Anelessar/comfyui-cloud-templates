@@ -14,32 +14,36 @@ defined by a JSON profile in `configs/`.
 - Existing models use a stricter completeness check.
 - Custom nodes can be pinned with a `commit` field.
 
-## Adding a workflow
+## Adding or extending a model family
 
-Ten reduced profiles are available under `configs/profiles/`. See the profile
+Five model-family profiles are available under `configs/profiles/`. See the profile
 catalog in `configs/profiles/README.md` for their purpose and model size.
 
-Create another profile with the included builder instead of copying model
-objects by hand:
+Add another Qwen, Wan, FLUX, Z-Image, or Krea variant to the existing family
+JSON. Create a new profile only when the model belongs to a different family.
+
+For a new family, use the included builder instead of copying model objects by
+hand:
 
 ```bash
 python3 tools/profile_builder.py list configs/image.json
 python3 tools/profile_builder.py create \
   configs/image.json \
-  configs/profiles/product-photo.json \
-  --name product-photo \
+  configs/profiles/new-image-family.json \
+  --name new-image-family \
   --models 1,2,3,4 \
   --nodes 10 \
   --with-discovery-tools
 ```
 
-Keep only the models and nodes required by that workflow. See
+Keep the shared base models, encoders, VAEs, adapters, and nodes used by that
+family. See
 `configs/README.md` for the complete schema and private-model examples.
 
 Then point `CONFIG_URL` to the new profile:
 
 ```text
-https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/product-photo.json
+https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/new-image-family.json
 ```
 
 Provider scripts do not need to change.
@@ -47,7 +51,8 @@ Provider scripts do not need to change.
 The top-level `image.json` and `video.json` files remain unchanged as source
 exports and are still large. They are not the recommended profiles for fresh,
 disposable GPUs. Tokens do not make large transfers substantially smaller;
-selecting one reduced workflow profile is the effective startup optimization.
+selecting one reduced model-family profile is the effective startup
+optimization.
 
 ## Vast.ai
 
@@ -78,7 +83,7 @@ For disposable Pods without persistent storage, set the volume size to `0 GB`
 and size the container disk to the profile's model data plus 40–50 GB.
 
 Set `PROFILE` to any filename under `configs/profiles/` without `.json`, for
-example `PROFILE=z-image-turbo`. A direct `CONFIG_URL` remains supported.
+example `PROFILE=z-image`. A direct `CONFIG_URL` remains supported.
 
 ## Logs and validation
 

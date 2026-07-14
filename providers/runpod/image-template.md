@@ -11,7 +11,7 @@
 ## Environment variables
 
 ```text
-PROFILE=qwen-image-edit-2511
+PROFILE=qwen-image
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
 ```
 

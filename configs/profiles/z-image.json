@@ -1,6 +1,6 @@
 {
-  "name": "z-image-turbo",
-  "description": "Z-Image Turbo with its Qwen 3 text encoder and FLUX VAE.",
+  "name": "z-image",
+  "description": "Z-Image family with the Turbo model, Qwen 3 text encoder, and FLUX VAE.",
   "comfyuiVersion": "v0.27.0",
   "models": [
     {

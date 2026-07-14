@@ -16,11 +16,11 @@ Change only:
 ```text
 PROVISIONING_SCRIPT=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/providers/vastai/provision.sh
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
-CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/wan22-animate.json
+CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/wan-video.json
 ```
 
-Copy the template for another video workflow and change only its name, disk
-size, GPU filters, and `CONFIG_URL` profile filename.
+Copy the template for another video family and change only its name, disk size,
+GPU filters, and `CONFIG_URL` profile filename.
 
 For direct external access, optionally add `8188/tcp`. Otherwise use an SSH
 tunnel without changing the portal configuration:
