@@ -1,16 +1,16 @@
 # Vast.ai — Video template
 
-Создай копию рабочего Image template. Не меняй Docker image, Launch mode,
-`PORTAL_CONFIG`, стандартные переменные, порты Jupyter/SSH и On-start Script.
+Copy the working Image template. Do not change its Docker image, launch mode,
+`PORTAL_CONFIG`, standard variables, Jupyter/SSH ports, or on-start script.
 
-Измени только:
+Change only:
 
-- Name: `ComfyUI Video Production`;
-- Disk: объём моделей из `configs/video.json` плюс минимум 50 GB;
-- GPU: под требования конкретного уменьшенного video workflow;
-- `CONFIG_URL` — значение ниже.
+- Name: `ComfyUI Video Production`.
+- Disk: model data from `configs/video.json` plus at least 50 GB.
+- GPU: select according to the reduced video workflow's requirements.
+- `CONFIG_URL`: use the value below.
 
-## Три новые переменные template
+## Three new template variables
 
 ```text
 PROVISIONING_SCRIPT=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/providers/vastai/provision.sh
@@ -18,25 +18,26 @@ REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-template
 CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/video.json
 ```
 
-Для прямого внешнего доступа можно добавить `8188/tcp`. Альтернатива без
-изменения portal-конфигурации:
+For direct external access, optionally add `8188/tcp`. Otherwise use an SSH
+tunnel without changing the portal configuration:
 
 ```bash
 ssh -p SSH_PORT root@HOST -L 8188:localhost:8188
 ```
 
-## Секреты
+## Secrets
 
-Один раз создай в `Account → Environment Variables`:
+Create these once under `Account → Environment Variables`:
 
 ```text
 HF_TOKEN=hf_...
 CIVITAI_TOKEN=...
 ```
 
-Они общие для Image и Video instances. Не дублируй секреты в template.
+They are shared by Image and Video instances. Do not duplicate secret values in
+the template.
 
-## Проверка
+## Validation
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/provision.log

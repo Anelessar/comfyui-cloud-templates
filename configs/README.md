@@ -1,6 +1,6 @@
-# Формат профиля
+# Profile schema
 
-Минимальная структура:
+Minimal structure:
 
 ```json
 {
@@ -11,7 +11,7 @@
 }
 ```
 
-## Публичная Hugging Face модель
+## Public Hugging Face model
 
 ```json
 {
@@ -24,10 +24,9 @@
 }
 ```
 
-`fileSize` задаётся в MiB. Если известен точный размер, вместо него можно
-добавить `sizeBytes`.
+`fileSize` is expressed in MiB. If the exact size is known, use `sizeBytes`.
 
-## Закрытая или gated Hugging Face модель
+## Private or gated Hugging Face model
 
 ```json
 {
@@ -41,9 +40,10 @@
 }
 ```
 
-Нужен секрет `HF_TOKEN`. Аккаунт токена должен иметь доступ к репозиторию.
+This requires the `HF_TOKEN` secret. The token's account must have repository
+access.
 
-## Закрытая Civitai модель
+## Private Civitai model
 
 ```json
 {
@@ -57,8 +57,8 @@
 }
 ```
 
-Нужен секрет `CIVITAI_TOKEN`. Установщик добавит его только к запросу на
-доверенный домен Civitai и скроет значение в логах.
+This requires the `CIVITAI_TOKEN` secret. The installer sends it only to the
+trusted Civitai domain and redacts it from logs.
 
 ## Custom node
 
@@ -70,7 +70,7 @@
 }
 ```
 
-Для воспроизводимой установки можно закрепить commit:
+For reproducible installation, pin a full commit SHA:
 
 ```json
 {
@@ -81,11 +81,10 @@
 }
 ```
 
-Зависимости устанавливаются в следующем порядке:
+Dependencies are installed in this order:
 
-1. `requirements.txt`, если он есть;
-2. `install.py`, если он есть;
-3. необязательный `pip install -e`, только если остались `pyproject.toml` или
-   `setup.py` без двух предыдущих установщиков.
+1. `requirements.txt`, when present.
+2. `install.py`, when present.
+3. Optional `pip install -e` when only `pyproject.toml` or `setup.py` remains.
 
-Ошибка третьего необязательного шага не останавливает остальные ноды и модели.
+A failure in the third optional step does not stop other nodes or models.
