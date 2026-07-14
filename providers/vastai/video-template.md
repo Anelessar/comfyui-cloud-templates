@@ -1,7 +1,12 @@
 # Vast.ai — Video template
 
 Copy the working Image template. Do not change its Docker image, launch mode,
-`PORTAL_CONFIG`, standard variables, Jupyter/SSH ports, or on-start script.
+standard variables, Jupyter/SSH ports, on-start script, exposed ComfyUI port, or
+the ComfyUI entry already appended to `PORTAL_CONFIG`:
+
+```text
+|localhost:8188:18188:/:ComfyUI
+```
 
 Change only:
 
@@ -22,8 +27,8 @@ CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/m
 Copy the template for another video family and change only its name, disk size,
 GPU filters, and `CONFIG_URL` profile filename.
 
-For direct external access, optionally add `8188/tcp`. Otherwise use an SSH
-tunnel without changing the portal configuration:
+Keep `8188/tcp` exposed so the application card can reach ComfyUI. An SSH
+tunnel remains available as a fallback:
 
 ```bash
 ssh -p SSH_PORT root@HOST -L 8188:localhost:8188
@@ -42,6 +47,10 @@ They are shared by Image and Video instances. Do not duplicate secret values in
 the template.
 
 ## Validation
+
+The ComfyUI application card is present immediately on a newly created
+instance, but it becomes usable only after provisioning starts ComfyUI on port
+`8188`. Existing instances are not modified retroactively.
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/provision.log

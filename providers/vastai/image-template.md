@@ -7,13 +7,20 @@ Jupyter successfully on a selected machine.
 
 - The official PyTorch Docker image.
 - Launch mode: `Jupyter + SSH`.
-- Existing `PORTAL_CONFIG`, `OPEN_BUTTON_*`, `JUPYTER_DIR`, and
-  `DATA_DIRECTORY` values.
+- Existing `PORTAL_CONFIG` application entries, `OPEN_BUTTON_*`, `JUPYTER_DIR`,
+  and `DATA_DIRECTORY` values.
 - The existing on-start script.
 - Standard Jupyter and SSH ports.
 
-Do not add ComfyUI to `PORTAL_CONFIG` and do not replace the on-start script.
-Those changes previously broke external access to a running Jupyter server.
+Append the following entry to the existing `PORTAL_CONFIG` value. Do not create
+a second variable and do not remove or replace any existing application entry:
+
+```text
+|localhost:8188:18188:/:ComfyUI
+```
+
+Do not replace the on-start script. The ComfyUI portal entry is independent of
+the Jupyter and SSH entries.
 
 ## Profile settings
 
@@ -22,9 +29,9 @@ Those changes previously broke external access to a running Jupyter server.
 - Disk: model data from the selected `configs/profiles/*.json` file plus at
   least 40 GB.
 - GPU: select according to the reduced workflow's requirements.
-- Port: add `8188/tcp` only when direct external ComfyUI access is required.
+- Port: expose `8188/tcp` so the ComfyUI application card can reach the service.
 
-Without a separate mapped port, use an SSH tunnel:
+An SSH tunnel remains available as a fallback:
 
 ```bash
 ssh -p SSH_PORT root@HOST -L 8188:localhost:8188
@@ -41,7 +48,8 @@ CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/m
 ```
 
 Copy the template for another image family and change only its name, disk size,
-GPU filters, and `CONFIG_URL` profile filename.
+GPU filters, and `CONFIG_URL` profile filename. Keep the ComfyUI portal entry
+and exposed port unchanged.
 
 Do not add `COMFY_VERSION` or `COMFY_PORT`. The version comes from
 `comfyuiVersion` in the JSON profile, and the default port is `8188`.
@@ -70,6 +78,10 @@ the selected profiles do not require that provider.
 ## Validation
 
 Jupyter should open exactly as it does in the original official template.
+The ComfyUI application card is present immediately on a newly created
+instance, but it becomes usable only after provisioning starts ComfyUI on port
+`8188`.
+
 Follow provisioning with:
 
 ```bash
