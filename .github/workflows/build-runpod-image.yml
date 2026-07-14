@@ -6,7 +6,10 @@ on:
     branches: [main]
     paths:
       - "common/**"
+      - "configs/**"
       - "providers/runpod/**"
+      - "providers/vastai/**"
+      - "tests/**"
       - ".github/workflows/build-runpod-image.yml"
 
 permissions:
@@ -15,13 +18,31 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/comfyui-cloud
+  # OCI image names must be lowercase; the GitHub account is Anelessar.
+  IMAGE_NAME: anelessar/comfyui-cloud
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate installers and profiles
+        run: |
+          python -m unittest discover -s tests -v
+          python -m py_compile common/install_from_config.py
+          for file in common/*.sh providers/vastai/*.sh providers/runpod/*.sh; do
+            bash -n "$file"
+          done
+          for file in configs/*.json; do
+            python -m json.tool "$file" >/dev/null
+            python common/install_from_config.py \
+              --config "$file" \
+              --comfy-dir /workspace/ComfyUI \
+              --validate-only
+          done
       - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -35,4 +56,4 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0.1.0
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0.2.0
