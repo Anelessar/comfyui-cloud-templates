@@ -77,6 +77,10 @@ separately as account-level environment variables.
 The external and internal ComfyUI ports must both be `8188`. Equal ports tell
 Vast.ai to create the secure application tunnel without starting a Caddy
 reverse proxy that would compete with ComfyUI for the same listening port.
+The Vast provisioning script also makes ComfyUI listen on IPv6. Current Vast
+PyTorch images resolve the tunnel target `localhost` to `::1`, so an IPv4-only
+ComfyUI listener produces a Cloudflare 502 even when the local IPv4 endpoint
+works. RunPod continues to use the normal IPv4 listener.
 
 This change applies only to instances created from an updated template. An
 already-created instance does not receive a new application card retroactively.

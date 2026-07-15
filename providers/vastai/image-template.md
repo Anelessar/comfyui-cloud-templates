@@ -26,6 +26,10 @@ Keep the external and internal ports equal. A different internal port makes
 Vast.ai start a Caddy reverse proxy on `8188`, which prevents ComfyUI from
 binding to its default port.
 
+The provisioning script stores the Vast-specific IPv6 listen address in
+`/workspace/comfyui-cloud/comfy-listen-host`. This is required because current
+Vast PyTorch images resolve the Cloudflare tunnel target `localhost` to `::1`.
+
 ## Profile settings
 
 - Name: `ComfyUI Image Production`.

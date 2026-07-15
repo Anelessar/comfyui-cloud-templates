@@ -8,6 +8,10 @@ the ComfyUI entry already appended to `PORTAL_CONFIG`:
 |localhost:8188:8188:/:ComfyUI
 ```
 
+The provisioning script stores the Vast-specific IPv6 listen address in
+`/workspace/comfyui-cloud/comfy-listen-host`. This is required because current
+Vast PyTorch images resolve the Cloudflare tunnel target `localhost` to `::1`.
+
 Change only:
 
 - Name: `ComfyUI Video Production`.

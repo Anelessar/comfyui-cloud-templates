@@ -5,6 +5,7 @@ STATE_DIR="${WORKSPACE}/comfyui-cloud"
 LOG_DIR="${STATE_DIR}/logs"
 : "${REPO_RAW_BASE:?Set REPO_RAW_BASE to the raw GitHub repository URL}"
 mkdir -p "${STATE_DIR}/runtime" "${LOG_DIR}"
+printf '%s\n' '::' > "${STATE_DIR}/comfy-listen-host"
 exec > >(tee -a "${LOG_DIR}/provision.log") 2>&1
 export DEBIAN_FRONTEND=noninteractive STATE_DIR
 apt-get update
