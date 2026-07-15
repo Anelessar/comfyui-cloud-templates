@@ -5,12 +5,12 @@ standard variables, Jupyter/SSH ports, on-start script, exposed ComfyUI port, or
 the ComfyUI entry already appended to `PORTAL_CONFIG`:
 
 ```text
-|localhost:8188:8188:/:ComfyUI
+|127.0.0.1:8188:8188:/:ComfyUI
 ```
 
-The provisioning script stores the Vast-specific IPv6 listen address in
-`/workspace/comfyui-cloud/comfy-listen-host`. This is required because current
-Vast PyTorch images resolve the Cloudflare tunnel target `localhost` to `::1`.
+The provisioning script stores the Vast-specific IPv4 listen address in
+`/workspace/comfyui-cloud/comfy-listen-host`. Using `127.0.0.1` in the portal
+entry keeps the direct Docker route and the Quick Tunnel on the same listener.
 
 Change only:
 

@@ -74,7 +74,7 @@ Copy a working official PyTorch template. Keep its existing `PORTAL_CONFIG`
 value and append the following entry to the same variable:
 
 ```text
-|localhost:8188:8188:/:ComfyUI
+|127.0.0.1:8188:8188:/:ComfyUI
 ```
 
 Do not create a second `PORTAL_CONFIG` variable. Keep the on-start script,
@@ -82,13 +82,12 @@ Jupyter configuration, and SSH configuration unchanged, and expose container
 port `8188`. Add only the three repository/profile URL variables. Store tokens
 separately as account-level environment variables.
 
-The external and internal ComfyUI ports must both be `8188`. Equal ports tell
-Vast.ai to create the secure application tunnel without starting a Caddy
-reverse proxy that would compete with ComfyUI for the same listening port.
-The Vast provisioning script also makes ComfyUI listen on IPv6. Current Vast
-PyTorch images resolve the tunnel target `localhost` to `::1`, so an IPv4-only
-ComfyUI listener produces a Cloudflare 502 even when the local IPv4 endpoint
-works. RunPod continues to use the normal IPv4 listener.
+The external and internal ComfyUI ports in `PORTAL_CONFIG` must both be `8188`.
+Use `127.0.0.1`, not `localhost`, as the tunnel hostname. Current Vast images
+resolve `localhost` to IPv6 first, while Docker's published port uses IPv4. An
+explicit IPv4 hostname lets the Quick Tunnel and the direct `IP:port` route use
+the same ComfyUI listener. Keep container port `8188/tcp` published so the first
+direct link and the Launch Application button remain usable.
 
 This change applies only to instances created from an updated template. An
 already-created instance does not receive a new application card retroactively.

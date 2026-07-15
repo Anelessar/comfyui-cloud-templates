@@ -3,7 +3,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DIRECT_COMFY_PORTAL = "localhost:8188:8188:/:ComfyUI"
+DIRECT_COMFY_PORTAL = "127.0.0.1:8188:8188:/:ComfyUI"
+IPV6_AMBIGUOUS_COMFY_PORTAL = "localhost:8188:8188:/:ComfyUI"
 CONFLICTING_COMFY_PORTAL = ":".join(
     ("localhost", "8188", "18188", "/", "ComfyUI")
 )
@@ -21,9 +22,10 @@ class VastPortalConfigTests(unittest.TestCase):
             with self.subTest(path=path):
                 content = path.read_text(encoding="utf-8")
                 self.assertIn(DIRECT_COMFY_PORTAL, content)
+                self.assertNotIn(IPV6_AMBIGUOUS_COMFY_PORTAL, content)
                 self.assertNotIn(CONFLICTING_COMFY_PORTAL, content)
 
-    def test_vast_provisioning_enables_ipv6_for_the_localhost_tunnel(self):
+    def test_vast_provisioning_uses_ipv4_for_direct_and_tunnel_routes(self):
         provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
             encoding="utf-8"
         )
@@ -35,12 +37,13 @@ class VastPortalConfigTests(unittest.TestCase):
         )
 
         self.assertIn("comfy-listen-host", provision)
-        self.assertIn("'::'", provision)
+        self.assertIn("'0.0.0.0'", provision)
+        self.assertIn("--bind '0.0.0.0'", provision)
         self.assertIn('read -r LISTEN_HOST < "${STATE_DIR}/comfy-listen-host"', start)
         self.assertIn('--listen "${LISTEN_HOST}"', start)
-        self.assertIn('HEALTH_HOST="[::1]"', start)
+        self.assertIn('HEALTH_HOST="127.0.0.1"', start)
         self.assertIn("comfy-listen-host", check)
-        self.assertIn('HEALTH_HOST="[::1]"', check)
+        self.assertIn('HEALTH_HOST="127.0.0.1"', check)
 
     def test_vast_starts_comfyui_before_downloading_models(self):
         provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(

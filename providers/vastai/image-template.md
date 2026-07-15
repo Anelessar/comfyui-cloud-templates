@@ -16,7 +16,7 @@ Append the following entry to the existing `PORTAL_CONFIG` value. Do not create
 a second variable and do not remove or replace any existing application entry:
 
 ```text
-|localhost:8188:8188:/:ComfyUI
+|127.0.0.1:8188:8188:/:ComfyUI
 ```
 
 Do not replace the on-start script. The ComfyUI portal entry is independent of
@@ -26,9 +26,10 @@ Keep the external and internal ports equal. A different internal port makes
 Vast.ai start a Caddy reverse proxy on `8188`, which prevents ComfyUI from
 binding to its default port.
 
-The provisioning script stores the Vast-specific IPv6 listen address in
-`/workspace/comfyui-cloud/comfy-listen-host`. This is required because current
-Vast PyTorch images resolve the Cloudflare tunnel target `localhost` to `::1`.
+The provisioning script stores the Vast-specific IPv4 listen address in
+`/workspace/comfyui-cloud/comfy-listen-host`. The explicit `127.0.0.1` portal
+hostname prevents the Quick Tunnel from resolving `localhost` to IPv6 while the
+direct Docker port continues to use IPv4.
 
 ## Profile settings
 
@@ -37,7 +38,8 @@ Vast PyTorch images resolve the Cloudflare tunnel target `localhost` to `::1`.
 - Disk: model data from the selected `configs/profiles/*.json` file plus at
   least 40 GB.
 - GPU: select according to the reduced workflow's requirements.
-- Port: expose `8188/tcp` so the ComfyUI application card can reach the service.
+- Port: expose `8188/tcp` so both the direct route and the Quick Tunnel can
+  reach the service.
 
 An SSH tunnel remains available as a fallback:
 
