@@ -1,42 +1,97 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
+
 WORKSPACE="${WORKSPACE:-/workspace}"
+COMFY_DIR="${WORKSPACE}/ComfyUI"
 STATE_DIR="${WORKSPACE}/comfyui-cloud"
+RUNTIME_DIR="${STATE_DIR}/runtime"
 LOG_DIR="${STATE_DIR}/logs"
+CONFIG_PATH="${STATE_DIR}/config.json"
+EXPECTED_COMFY_VERSION="${VAST_COMFY_VERSION:-v0.27.0}"
+
 : "${REPO_RAW_BASE:?Set REPO_RAW_BASE to the raw GitHub repository URL}"
-mkdir -p "${STATE_DIR}/runtime" "${LOG_DIR}"
-printf '%s\n' '0.0.0.0' > "${STATE_DIR}/comfy-listen-host"
+: "${CONFIG_URL:?Set CONFIG_URL to a ComfyUI profile JSON URL}"
+
+mkdir -p "${RUNTIME_DIR}" "${LOG_DIR}" "${WORKSPACE}/.cache/huggingface"
 exec > >(tee -a "${LOG_DIR}/provision.log") 2>&1
 
-# The Vast application tunnel is created before provisioning finishes. Serve a
-# small auto-refreshing status page immediately so the application shows useful
-# progress instead of Cloudflare 502 while dependencies are installed.
-STATUS_DIR="${STATE_DIR}/status-page"
-STATUS_PID_FILE="${STATE_DIR}/status-server.pid"
-mkdir -p "${STATUS_DIR}"
-printf '%s\n' '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="5"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ComfyUI is installing</title><style>body{font-family:system-ui,sans-serif;max-width:720px;margin:15vh auto;padding:32px;background:#111;color:#eee}h1{font-size:2rem}p{line-height:1.6;color:#bbb}</style></head><body><h1>ComfyUI is installing</h1><p>The interface will open automatically when ComfyUI and its custom nodes are ready. Model downloads will continue after the interface becomes available.</p></body></html>' > "${STATUS_DIR}/index.html"
-if [[ ! -f "${STATUS_PID_FILE}" ]] || ! kill -0 "$(cat "${STATUS_PID_FILE}" 2>/dev/null || true)" 2>/dev/null; then
-  nohup python -m http.server 8188 --bind '0.0.0.0' --directory "${STATUS_DIR}" >> "${LOG_DIR}/status-server.log" 2>&1 &
-  echo "$!" > "${STATUS_PID_FILE}"
+echo "Vast.ai ComfyUI profile provisioning started at $(date -Is)"
+
+if [[ -f /venv/main/bin/activate ]]; then
+  # shellcheck disable=SC1091
+  source /venv/main/bin/activate
 fi
 
-export DEBIAN_FRONTEND=noninteractive STATE_DIR
-apt-get update
-apt-get install -y --no-install-recommends aria2 ca-certificates curl ffmpeg git jq libgl1 libglib2.0-0
-rm -rf /var/lib/apt/lists/*
-for file in install_from_config.py install.sh start-comfyui.sh check-install.sh; do
-  curl -fL --retry 5 "${REPO_RAW_BASE}/common/${file}" -o "${STATE_DIR}/runtime/${file}"
-done
-chmod +x "${STATE_DIR}/runtime/"*.sh
-export INSTALLER_PATH="${STATE_DIR}/runtime/install_from_config.py"
-export INSTALL_PHASE=nodes
-"${STATE_DIR}/runtime/install.sh"
-"${STATE_DIR}/runtime/start-comfyui.sh"
+missing_packages=()
+command -v aria2c >/dev/null 2>&1 || missing_packages+=(aria2)
+command -v ffmpeg >/dev/null 2>&1 || missing_packages+=(ffmpeg)
+if ((${#missing_packages[@]})); then
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get update
+  apt-get install -y --no-install-recommends "${missing_packages[@]}"
+  rm -rf /var/lib/apt/lists/*
+fi
 
-# Keep the UI available while large model files download. The portal tunnel is
-# created at container startup, so starting ComfyUI before this phase prevents
-# a long-lived 502 page during initial provisioning.
-python "${INSTALLER_PATH}" \
-  --config "${STATE_DIR}/config.json" \
-  --comfy-dir "${WORKSPACE}/ComfyUI" \
-  --phase models
+curl -fL --retry 10 --retry-delay 5 \
+  "${CONFIG_URL}" \
+  -o "${CONFIG_PATH}"
+curl -fL --retry 10 --retry-delay 5 \
+  "${REPO_RAW_BASE}/common/install_from_config.py" \
+  -o "${RUNTIME_DIR}/install_from_config.py"
+curl -fL --retry 10 --retry-delay 5 \
+  "${REPO_RAW_BASE}/common/check-install.sh" \
+  -o "${RUNTIME_DIR}/check-install.sh"
+chmod +x "${RUNTIME_DIR}/install_from_config.py" "${RUNTIME_DIR}/check-install.sh"
+
+if [[ ! -f "${COMFY_DIR}/main.py" ]]; then
+  echo "The official vastai/comfy image did not initialize ${COMFY_DIR}." >&2
+  exit 1
+fi
+
+profile_version="$(python - "${CONFIG_PATH}" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    print(json.load(handle)["comfyuiVersion"])
+PY
+)"
+if [[ "${profile_version}" != "${EXPECTED_COMFY_VERSION}" ]]; then
+  echo "Profile requires ComfyUI ${profile_version}, but the Vast template image provides ${EXPECTED_COMFY_VERSION}." >&2
+  echo "Update the vastai/comfy image tag and VAST_COMFY_VERSION together." >&2
+  exit 1
+fi
+
+export \
+  HF_HOME="${WORKSPACE}/.cache/huggingface" \
+  PIP_CACHE_DIR="${WORKSPACE}/.cache/pip" \
+  PYTHONUNBUFFERED=1 \
+  STATE_DIR \
+  WORKSPACE
+
+python "${RUNTIME_DIR}/install_from_config.py" \
+  --config "${CONFIG_PATH}" \
+  --comfy-dir "${COMFY_DIR}" \
+  --validate-only
+
+# The official image keeps its Supervisor-managed ComfyUI service paused while
+# /.provisioning exists. Install nodes synchronously so the first ComfyUI start
+# sees the complete node set, then let the large model downloads continue in
+# the background after the official service is released.
+python "${RUNTIME_DIR}/install_from_config.py" \
+  --config "${CONFIG_PATH}" \
+  --comfy-dir "${COMFY_DIR}" \
+  --phase nodes
+
+nohup python "${RUNTIME_DIR}/install_from_config.py" \
+  --config "${CONFIG_PATH}" \
+  --comfy-dir "${COMFY_DIR}" \
+  --phase models \
+  >> "${LOG_DIR}/models.log" 2>&1 &
+models_pid=$!
+echo "${models_pid}" > "${STATE_DIR}/models.pid"
+
+echo "Custom nodes are ready. The official ComfyUI service can now start on internal port 18188."
+echo "Model downloads continue in the background as PID ${models_pid}."
+echo "Model log: ${LOG_DIR}/models.log"
+echo "Vast.ai ComfyUI profile provisioning completed at $(date -Is)"

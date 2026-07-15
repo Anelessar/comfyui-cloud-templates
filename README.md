@@ -3,10 +3,17 @@
 A shared installer for Vast.ai and RunPod. Each model and custom-node set is
 defined by a JSON profile in `configs/`.
 
-## Fixes included
+## Architecture
 
-- Vast.ai templates preserve the existing portal entries and append a ComfyUI
-  application entry without changing the on-start script.
+- Vast.ai profiles extend the official `vastai/comfy` image and use its
+  Supervisor-managed ComfyUI service, Caddy proxy, authentication, Jupyter, and
+  Instance Portal.
+- Vast.ai exposes `8188` and proxies it to the official internal ComfyUI port
+  `18188` through `localhost:8188:18188:/:ComfyUI`.
+- The custom Vast provisioning script installs profile nodes first, then starts
+  model downloads in the background and releases the official ComfyUI service.
+- RunPod continues to use the repository's standalone startup script on port
+  `8188`.
 - A failed optional `pip install -e` for one node no longer stops provisioning.
 - `comfyuiVersion` is read from the selected JSON profile.
 - Private and gated Hugging Face and Civitai models are supported.
@@ -14,14 +21,6 @@ defined by a JSON profile in `configs/`.
 - Interrupted model downloads resume through `aria2c`.
 - Existing models use a stricter completeness check.
 - Custom nodes can be pinned with a `commit` field.
-- Vast.ai starts the ComfyUI server after installing its custom nodes, then
-  downloads model files while the UI is already available. This avoids a
-  long-lived Cloudflare 502 page during first-time model downloads.
-- The ComfyUI readiness check waits up to five minutes and also waits for an
-  already-starting process instead of treating its PID as proof of readiness.
-- A temporary auto-refreshing installation page occupies the ComfyUI tunnel
-  while the Python environment is prepared, replacing the previous Cloudflare
-  502 page. ComfyUI takes over the same URL when it becomes healthy.
 
 ## Adding or extending a model family
 
@@ -65,37 +64,28 @@ optimization.
 
 ## Vast.ai
 
-Use:
+Use the official image and template settings documented in:
 
 - `providers/vastai/image-template.md`
 - `providers/vastai/video-template.md`
 
-Copy a working official PyTorch template. Keep its existing `PORTAL_CONFIG`
-value and append the following entry to the same variable:
-
 ```text
-|127.0.0.1:8188:8188:/:ComfyUI
+vastai/comfy:v0.27.0-cuda-13.2-py312
 ```
 
-Do not create a second `PORTAL_CONFIG` variable. Keep the on-start script,
-Jupyter configuration, and SSH configuration unchanged, and expose container
-port `8188`. Add only the three repository/profile URL variables. Store tokens
-separately as account-level environment variables.
+The ComfyUI portal entry must be:
 
-The external and internal ComfyUI ports in `PORTAL_CONFIG` must both be `8188`.
-Use `127.0.0.1`, not `localhost`, as the tunnel hostname. Current Vast images
-resolve `localhost` to IPv6 first, while Docker's published port uses IPv4. An
-explicit IPv4 hostname lets the Quick Tunnel and the direct `IP:port` route use
-the same ComfyUI listener. Keep container port `8188/tcp` published so the first
-direct link and the Launch Application button remain usable.
+```text
+localhost:8188:18188:/:ComfyUI
+```
 
-This change applies only to instances created from an updated template. An
-already-created instance does not receive a new application card retroactively.
-On a fresh instance, a short 502 response is still possible while Python imports
-the provisioning script itself. It is then replaced by an auto-refreshing
-installation page. The script starts ComfyUI before downloading models and waits
-for the local health endpoint, so the real interface becomes available as early
-as the installed node set allows.
+Keep the official on-start command `entrypoint.sh`, Jupyter + SSH launch mode,
+direct Jupyter HTTPS, and container port `8188/tcp`. Do not run the standalone
+`common/start-comfyui.sh` on Vast.ai. The official image starts ComfyUI on
+internal port `18188` after provisioning has installed the selected node set.
+
+Store tokens separately as account-level environment variables. Each family
+template changes only its name, recommended disk size, and `CONFIG_URL`.
 
 ## RunPod
 
@@ -122,6 +112,7 @@ Vast.ai:
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/provision.log
+tail -f /workspace/comfyui-cloud/logs/models.log
 bash /workspace/comfyui-cloud/runtime/check-install.sh
 ```
 
@@ -131,7 +122,7 @@ RunPod:
 bash /opt/comfyui-cloud/common/check-install.sh
 ```
 
-ComfyUI log:
+Standalone RunPod ComfyUI log:
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/comfyui.log

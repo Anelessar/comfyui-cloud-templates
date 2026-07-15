@@ -1,66 +1,49 @@
-# Vast.ai — Video template
+# Vast.ai Wan Video Family Template
 
-Copy the working Image template. Do not change its Docker image, launch mode,
-standard variables, Jupyter/SSH ports, on-start script, exposed ComfyUI port, or
-the ComfyUI entry already appended to `PORTAL_CONFIG`:
+Use the same official settings as the image-family templates:
 
 ```text
-|127.0.0.1:8188:8188:/:ComfyUI
+Image: vastai/comfy:v0.27.0-cuda-13.2-py312
+Launch mode: Jupyter + SSH
+On-start script: entrypoint.sh
+Jupyter direct HTTPS: enabled
+Visibility: Private
+Recommended disk: 150 GB
 ```
 
-The provisioning script stores the Vast-specific IPv4 listen address in
-`/workspace/comfyui-cloud/comfy-listen-host`. Using `127.0.0.1` in the portal
-entry keeps the direct Docker route and the Quick Tunnel on the same listener.
-
-Change only:
-
-- Name: `ComfyUI Video Production`.
-- Disk: model data from the selected `configs/profiles/*.json` file plus at
-  least 50 GB.
-- GPU: select according to the reduced video workflow's requirements.
-- `CONFIG_URL`: use the value below.
-
-## Three new template variables
+## Docker ports
 
 ```text
+1111/tcp
+8080/tcp
+8384/tcp
+72299/tcp
+8188/tcp
+```
+
+## Environment variables
+
+```text
+COMFYUI_ARGS=--disable-auto-launch --disable-xformers --port 18188 --enable-cors-header
+PORTAL_CONFIG=localhost:1111:11111:/:Instance Portal|localhost:8188:18188:/:ComfyUI|localhost:8080:18080:/:Jupyter|localhost:8080:8080:/terminals/1:Jupyter Terminal|localhost:8384:18384:/:Syncthing
+OPEN_BUTTON_PORT=1111
+OPEN_BUTTON_TOKEN=1
+JUPYTER_DIR=/
+DATA_DIRECTORY=/workspace/
 PROVISIONING_SCRIPT=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/providers/vastai/provision.sh
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
 CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/wan-video.json
 ```
 
-Copy the template for another video family and change only its name, disk size,
-GPU filters, and `CONFIG_URL` profile filename.
+The external ComfyUI application port is `8188`; the official Caddy proxy sends
+traffic to ComfyUI on internal port `18188`. Do not start another process on
+`8188` and do not replace `entrypoint.sh`.
 
-Keep `8188/tcp` exposed so the application card can reach ComfyUI. An SSH
-tunnel remains available as a fallback:
-
-```bash
-ssh -p SSH_PORT root@HOST -L 8188:localhost:8188
-```
-
-## Secrets
-
-Create these once under `Account → Environment Variables`:
-
-```text
-HF_TOKEN=hf_...
-CIVITAI_TOKEN=...
-```
-
-They are shared by Image and Video instances. Do not duplicate secret values in
-the template.
-
-## Validation
-
-The ComfyUI application card is present immediately on a newly created
-instance. Provisioning installs the selected custom nodes and starts ComfyUI
-before downloading model files, so the UI becomes available while large video
-models continue downloading. During the initial Python and custom-node setup,
-the application URL shows an auto-refreshing `ComfyUI is installing` page and
-switches to the real UI after the provisioning log reports `ComfyUI is ready`.
-Existing instances are not modified retroactively.
+Store `HF_TOKEN` and `CIVITAI_TOKEN` once as Vast.ai account environment
+variables. Never put their values in this file, a profile JSON, or the template.
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/provision.log
+tail -f /workspace/comfyui-cloud/logs/models.log
 bash /workspace/comfyui-cloud/runtime/check-install.sh
 ```

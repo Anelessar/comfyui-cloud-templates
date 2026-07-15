@@ -3,15 +3,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DIRECT_COMFY_PORTAL = "127.0.0.1:8188:8188:/:ComfyUI"
-IPV6_AMBIGUOUS_COMFY_PORTAL = "localhost:8188:8188:/:ComfyUI"
-CONFLICTING_COMFY_PORTAL = ":".join(
-    ("localhost", "8188", "18188", "/", "ComfyUI")
-)
+OFFICIAL_IMAGE = "vastai/comfy:v0.27.0-cuda-13.2-py312"
+OFFICIAL_COMFY_PORTAL = "localhost:8188:18188:/:ComfyUI"
 
 
 class VastPortalConfigTests(unittest.TestCase):
-    def test_documented_templates_use_the_direct_comfyui_port(self):
+    def test_documented_templates_use_the_official_comfy_image_and_proxy_port(self):
         paths = (
             ROOT / "README.md",
             ROOT / "providers" / "vastai" / "image-template.md",
@@ -21,55 +18,43 @@ class VastPortalConfigTests(unittest.TestCase):
         for path in paths:
             with self.subTest(path=path):
                 content = path.read_text(encoding="utf-8")
-                self.assertIn(DIRECT_COMFY_PORTAL, content)
-                self.assertNotIn(IPV6_AMBIGUOUS_COMFY_PORTAL, content)
-                self.assertNotIn(CONFLICTING_COMFY_PORTAL, content)
+                self.assertIn(OFFICIAL_IMAGE, content)
+                self.assertIn(OFFICIAL_COMFY_PORTAL, content)
+                self.assertNotIn("127.0.0.1:8188:8188:/:ComfyUI", content)
 
-    def test_vast_provisioning_uses_ipv4_for_direct_and_tunnel_routes(self):
+    def test_vast_provisioning_delegates_service_startup_to_official_image(self):
         provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
             encoding="utf-8"
         )
-        start = (ROOT / "common" / "start-comfyui.sh").read_text(
+
+        self.assertIn("EXPECTED_COMFY_VERSION", provision)
+        self.assertIn("--phase nodes", provision)
+        self.assertIn("--phase models", provision)
+        self.assertIn("models.pid", provision)
+        self.assertNotIn("start-comfyui.sh", provision)
+        self.assertNotIn("python -m http.server", provision)
+        self.assertNotIn("--listen", provision)
+
+    def test_model_downloads_start_after_nodes_and_run_in_background(self):
+        provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
             encoding="utf-8"
         )
+
+        nodes_phase = provision.index("--phase nodes")
+        nohup_models = provision.index("nohup python")
+        models_phase = provision.index("--phase models", nohup_models)
+        self.assertLess(nodes_phase, nohup_models)
+        self.assertLess(nohup_models, models_phase)
+
+    def test_check_script_supports_official_supervisor_and_runpod(self):
         check = (ROOT / "common" / "check-install.sh").read_text(
             encoding="utf-8"
         )
 
-        self.assertIn("comfy-listen-host", provision)
-        self.assertIn("'0.0.0.0'", provision)
-        self.assertIn("--bind '0.0.0.0'", provision)
-        self.assertIn('read -r LISTEN_HOST < "${STATE_DIR}/comfy-listen-host"', start)
-        self.assertIn('--listen "${LISTEN_HOST}"', start)
-        self.assertIn('HEALTH_HOST="127.0.0.1"', start)
-        self.assertIn("comfy-listen-host", check)
-        self.assertIn('HEALTH_HOST="127.0.0.1"', check)
-
-    def test_vast_starts_comfyui_before_downloading_models(self):
-        provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
-            encoding="utf-8"
-        )
-
-        nodes_phase = provision.index("export INSTALL_PHASE=nodes")
-        start = provision.index('"${STATE_DIR}/runtime/start-comfyui.sh"')
-        models_phase = provision.index("--phase models")
-        self.assertLess(nodes_phase, start)
-        self.assertLess(start, models_phase)
-
-    def test_vast_serves_installation_page_before_provisioning(self):
-        provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
-            encoding="utf-8"
-        )
-        start = (ROOT / "common" / "start-comfyui.sh").read_text(
-            encoding="utf-8"
-        )
-
-        status_server = provision.index("python -m http.server 8188")
-        package_install = provision.index("apt-get update")
-        self.assertLess(status_server, package_install)
-        self.assertIn("status-server.pid", provision)
-        self.assertIn("status-server.pid", start)
-        self.assertIn('kill "${STATUS_PID}"', start)
+        self.assertIn("supervisorctl status comfyui", check)
+        self.assertIn('COMFY_PORT:-18188', check)
+        self.assertIn('COMFY_PORT:-8188', check)
+        self.assertIn("/system_stats", check)
 
 
 if __name__ == "__main__":

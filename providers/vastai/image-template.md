@@ -1,111 +1,86 @@
-# Vast.ai — Image template
+# Vast.ai Image Family Template
 
-Create this template by copying an official PyTorch template that already opens
-Jupyter successfully on a selected machine.
+Base every image-family template on the official Vast.ai ComfyUI template.
+The settings below intentionally follow the official template's Supervisor,
+Caddy, Jupyter, and Instance Portal architecture.
 
-## Keep unchanged
-
-- The official PyTorch Docker image.
-- Launch mode: `Jupyter + SSH`.
-- Existing `PORTAL_CONFIG` application entries, `OPEN_BUTTON_*`, `JUPYTER_DIR`,
-  and `DATA_DIRECTORY` values.
-- The existing on-start script.
-- Standard Jupyter and SSH ports.
-
-Append the following entry to the existing `PORTAL_CONFIG` value. Do not create
-a second variable and do not remove or replace any existing application entry:
+## Base image and launch mode
 
 ```text
-|127.0.0.1:8188:8188:/:ComfyUI
+Image: vastai/comfy:v0.27.0-cuda-13.2-py312
+Launch mode: Jupyter + SSH
+On-start script: entrypoint.sh
+Jupyter direct HTTPS: enabled
+Visibility: Private
 ```
 
-Do not replace the on-start script. The ComfyUI portal entry is independent of
-the Jupyter and SSH entries.
+Do not start ComfyUI from the custom provisioning script. The official image
+manages it through Supervisor and starts it on internal port `18188` after
+first-boot provisioning releases the service.
 
-Keep the external and internal ports equal. A different internal port makes
-Vast.ai start a Caddy reverse proxy on `8188`, which prevents ComfyUI from
-binding to its default port.
+## Docker ports
 
-The provisioning script stores the Vast-specific IPv4 listen address in
-`/workspace/comfyui-cloud/comfy-listen-host`. The explicit `127.0.0.1` portal
-hostname prevents the Quick Tunnel from resolving `localhost` to IPv6 while the
-direct Docker port continues to use IPv4.
-
-## Profile settings
-
-- Name: `ComfyUI Image Production`.
-- Visibility: `Private`.
-- Disk: model data from the selected `configs/profiles/*.json` file plus at
-  least 40 GB.
-- GPU: select according to the reduced workflow's requirements.
-- Port: expose `8188/tcp` so both the direct route and the Quick Tunnel can
-  reach the service.
-
-An SSH tunnel remains available as a fallback:
-
-```bash
-ssh -p SSH_PORT root@HOST -L 8188:localhost:8188
-```
-
-Then open `http://127.0.0.1:8188` locally.
-
-## Three new template variables
+Keep these official ports:
 
 ```text
+1111/tcp
+8080/tcp
+8384/tcp
+72299/tcp
+8188/tcp
+```
+
+The public ComfyUI port is `8188`; Caddy proxies it to the Supervisor-managed
+ComfyUI process on internal port `18188`.
+
+## Environment variables
+
+```text
+COMFYUI_ARGS=--disable-auto-launch --disable-xformers --port 18188 --enable-cors-header
+PORTAL_CONFIG=localhost:1111:11111:/:Instance Portal|localhost:8188:18188:/:ComfyUI|localhost:8080:18080:/:Jupyter|localhost:8080:8080:/terminals/1:Jupyter Terminal|localhost:8384:18384:/:Syncthing
+OPEN_BUTTON_PORT=1111
+OPEN_BUTTON_TOKEN=1
+JUPYTER_DIR=/
+DATA_DIRECTORY=/workspace/
 PROVISIONING_SCRIPT=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/providers/vastai/provision.sh
 REPO_RAW_BASE=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main
 CONFIG_URL=https://raw.githubusercontent.com/Anelessar/comfyui-cloud-templates/main/configs/profiles/qwen-image.json
 ```
 
-Copy the template for another image family and change only its name, disk size,
-GPU filters, and `CONFIG_URL` profile filename. Keep the ComfyUI portal entry
-and exposed port unchanged.
+Create one private template per family and change only the template name,
+recommended disk size, and `CONFIG_URL`:
 
-Do not add `COMFY_VERSION` or `COMFY_PORT`. The version comes from
-`comfyuiVersion` in the JSON profile, and the default port is `8188`.
+| Template | Profile | Recommended disk |
+|---|---|---:|
+| ComfyUI Qwen Image | `qwen-image.json` | 100 GB |
+| ComfyUI FLUX | `flux.json` | 70 GB |
+| ComfyUI Z-Image | `z-image.json` | 60 GB |
+| ComfyUI Krea 2 | `krea-2.json` | 70 GB |
 
-With the five standard variables from the official PyTorch template, the final
-set fits the 10-variable limit:
+## Account secrets
 
-```text
-5 standard + PROVISIONING_SCRIPT + REPO_RAW_BASE + CONFIG_URL
-+ HF_TOKEN + CIVITAI_TOKEN = 10
-```
-
-## Vast.ai account secrets
-
-Create two encrypted variables under `Account → Environment Variables`:
+Store these once under Vast.ai account environment variables, not inside a
+template or repository:
 
 ```text
-HF_TOKEN=hf_...
-CIVITAI_TOKEN=...
+HF_TOKEN
+CIVITAI_TOKEN
 ```
 
-Never place token values in the template, GitHub, or JSON. Account-level
-variables are automatically available to created instances. Omit a secret when
-the selected profiles do not require that provider.
+The provisioning installer automatically uses them for authenticated model
+downloads and redacts them from command logs.
 
-## Validation
+## Runtime behavior
 
-Jupyter should open exactly as it does in the original official template.
-The ComfyUI application card is present immediately on a newly created
-instance. Provisioning installs ComfyUI and the selected custom nodes first,
-starts the server, verifies its health endpoint, and only then downloads model
-files. The UI is therefore available while the large model download continues.
-During the initial Python and custom-node installation, the same application URL
-shows an auto-refreshing `ComfyUI is installing` page instead of a persistent
-Cloudflare 502. It switches to ComfyUI after the provisioning log reports
-`ComfyUI is ready`.
-
-Follow provisioning with:
+The official image prepares `/workspace/ComfyUI` and keeps its ComfyUI service
+paused while provisioning is active. The custom script validates the selected
+profile and installs its nodes synchronously. Model downloads are then launched
+in the background, provisioning exits, and the official Supervisor service
+starts ComfyUI. This keeps the working official portal route while avoiding a
+second competing ComfyUI process.
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/provision.log
-```
-
-The check command reports whether the UI is ready and whether model downloads
-have completed:
-
-```bash
+tail -f /workspace/comfyui-cloud/logs/models.log
 bash /workspace/comfyui-cloud/runtime/check-install.sh
 ```
