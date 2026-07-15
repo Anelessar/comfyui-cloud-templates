@@ -66,13 +66,17 @@ Copy a working official PyTorch template. Keep its existing `PORTAL_CONFIG`
 value and append the following entry to the same variable:
 
 ```text
-|localhost:8188:18188:/:ComfyUI
+|localhost:8188:8188:/:ComfyUI
 ```
 
 Do not create a second `PORTAL_CONFIG` variable. Keep the on-start script,
 Jupyter configuration, and SSH configuration unchanged, and expose container
 port `8188`. Add only the three repository/profile URL variables. Store tokens
 separately as account-level environment variables.
+
+The external and internal ComfyUI ports must both be `8188`. Equal ports tell
+Vast.ai to create the secure application tunnel without starting a Caddy
+reverse proxy that would compete with ComfyUI for the same listening port.
 
 This change applies only to instances created from an updated template. An
 already-created instance does not receive a new application card retroactively.

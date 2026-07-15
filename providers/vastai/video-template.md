@@ -5,7 +5,7 @@ standard variables, Jupyter/SSH ports, on-start script, exposed ComfyUI port, or
 the ComfyUI entry already appended to `PORTAL_CONFIG`:
 
 ```text
-|localhost:8188:18188:/:ComfyUI
+|localhost:8188:8188:/:ComfyUI
 ```
 
 Change only:

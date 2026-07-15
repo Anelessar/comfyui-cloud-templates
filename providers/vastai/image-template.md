@@ -16,11 +16,15 @@ Append the following entry to the existing `PORTAL_CONFIG` value. Do not create
 a second variable and do not remove or replace any existing application entry:
 
 ```text
-|localhost:8188:18188:/:ComfyUI
+|localhost:8188:8188:/:ComfyUI
 ```
 
 Do not replace the on-start script. The ComfyUI portal entry is independent of
 the Jupyter and SSH entries.
+
+Keep the external and internal ports equal. A different internal port makes
+Vast.ai start a Caddy reverse proxy on `8188`, which prevents ComfyUI from
+binding to its default port.
 
 ## Profile settings
 
