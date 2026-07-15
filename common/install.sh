@@ -6,6 +6,7 @@ COMFY_DIR="${COMFY_DIR:-${WORKSPACE}/ComfyUI}"
 STATE_DIR="${STATE_DIR:-${WORKSPACE}/comfyui-cloud}"
 CONFIG_PATH="${CONFIG_PATH:-${STATE_DIR}/config.json}"
 INSTALLER_PATH="${INSTALLER_PATH:-/opt/comfyui-cloud/common/install_from_config.py}"
+INSTALL_PHASE="${INSTALL_PHASE:-all}"
 
 : "${CONFIG_URL:?CONFIG_URL must point to a ComfyUI profile JSON file}"
 
@@ -63,6 +64,9 @@ git -C "${COMFY_DIR}" fetch --depth 1 origin "${COMFY_VERSION}"
 git -C "${COMFY_DIR}" checkout --force --detach FETCH_HEAD
 
 python -m pip install -r "${COMFY_DIR}/requirements.txt"
-python "${INSTALLER_PATH}" --config "${CONFIG_PATH}" --comfy-dir "${COMFY_DIR}"
+python "${INSTALLER_PATH}" \
+  --config "${CONFIG_PATH}" \
+  --comfy-dir "${COMFY_DIR}" \
+  --phase "${INSTALL_PHASE}"
 
-echo "Installation completed for ${CONFIG_URL}"
+echo "Installation phase ${INSTALL_PHASE} completed for ${CONFIG_URL}"

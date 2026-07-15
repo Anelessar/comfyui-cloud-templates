@@ -53,8 +53,12 @@ the template.
 ## Validation
 
 The ComfyUI application card is present immediately on a newly created
-instance, but it becomes usable only after provisioning starts ComfyUI on port
-`8188`. Existing instances are not modified retroactively.
+instance. Provisioning installs the selected custom nodes and starts ComfyUI
+before downloading model files, so the UI becomes available while large video
+models continue downloading. During the initial Python and custom-node setup,
+the application URL shows an auto-refreshing `ComfyUI is installing` page and
+switches to the real UI after the provisioning log reports `ComfyUI is ready`.
+Existing instances are not modified retroactively.
 
 ```bash
 tail -f /workspace/comfyui-cloud/logs/provision.log

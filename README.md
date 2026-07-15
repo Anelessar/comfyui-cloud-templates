@@ -14,6 +14,14 @@ defined by a JSON profile in `configs/`.
 - Interrupted model downloads resume through `aria2c`.
 - Existing models use a stricter completeness check.
 - Custom nodes can be pinned with a `commit` field.
+- Vast.ai starts the ComfyUI server after installing its custom nodes, then
+  downloads model files while the UI is already available. This avoids a
+  long-lived Cloudflare 502 page during first-time model downloads.
+- The ComfyUI readiness check waits up to five minutes and also waits for an
+  already-starting process instead of treating its PID as proof of readiness.
+- A temporary auto-refreshing installation page occupies the ComfyUI tunnel
+  while the Python environment is prepared, replacing the previous Cloudflare
+  502 page. ComfyUI takes over the same URL when it becomes healthy.
 
 ## Adding or extending a model family
 
@@ -84,6 +92,11 @@ works. RunPod continues to use the normal IPv4 listener.
 
 This change applies only to instances created from an updated template. An
 already-created instance does not receive a new application card retroactively.
+On a fresh instance, a short 502 response is still possible while Python imports
+the provisioning script itself. It is then replaced by an auto-refreshing
+installation page. The script starts ComfyUI before downloading models and waits
+for the local health endpoint, so the real interface becomes available as early
+as the installed node set allows.
 
 ## RunPod
 

@@ -359,6 +359,12 @@ def main() -> int:
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--comfy-dir", required=True, type=Path)
     parser.add_argument("--validate-only", action="store_true")
+    parser.add_argument(
+        "--phase",
+        choices=("all", "nodes", "models"),
+        default="all",
+        help="Install everything, custom nodes only, or models only.",
+    )
     args = parser.parse_args()
 
     config = json.loads(args.config.read_text(encoding="utf-8"))
@@ -379,41 +385,65 @@ def main() -> int:
     custom_nodes_dir = comfy_dir / "custom_nodes"
     custom_nodes_dir.mkdir(parents=True, exist_ok=True)
 
-    update_nodes = os.getenv("UPDATE_NODES", "0") == "1"
-    node_results = []
-    seen_repos: set[str] = set()
-
-    for node in config["customNodes"]:
-        repo_url = node_repository_url(node)
-        if repo_url in seen_repos:
-            print(f"Skipping duplicate node repository: {repo_url}")
-            continue
-        seen_repos.add(repo_url)
-        node_results.append(install_node(node, custom_nodes_dir, update_nodes))
-
-    model_results = []
-    for position, model in enumerate(config["models"], start=1):
-        print(
-            f"=== Model {position}/{len(config['models'])}: "
-            f"{model.get('customFilename') or model.get('name')} ==="
-        )
-        model_results.append(download_model(model, comfy_dir))
-
     default_state_dir = Path(os.getenv("WORKSPACE", "/workspace")) / "comfyui-cloud"
     state_dir = Path(os.getenv("STATE_DIR", str(default_state_dir)))
     state_dir.mkdir(parents=True, exist_ok=True)
+    state_file = state_dir / "install-state.json"
+    existing_state: dict[str, object] = {}
+    if state_file.exists():
+        try:
+            existing_state = json.loads(state_file.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            existing_state = {}
+
+    install_nodes = args.phase in {"all", "nodes"}
+    install_models = args.phase in {"all", "models"}
+    if args.phase == "nodes":
+        (state_dir / "INSTALL_COMPLETE").unlink(missing_ok=True)
+
+    update_nodes = os.getenv("UPDATE_NODES", "0") == "1"
+    node_results = list(existing_state.get("nodes") or [])
+    if install_nodes:
+        node_results = []
+        seen_repos: set[str] = set()
+        for node in config["customNodes"]:
+            repo_url = node_repository_url(node)
+            if repo_url in seen_repos:
+                print(f"Skipping duplicate node repository: {repo_url}")
+                continue
+            seen_repos.add(repo_url)
+            node_results.append(install_node(node, custom_nodes_dir, update_nodes))
+        (state_dir / "NODES_COMPLETE").write_text("ok\n", encoding="utf-8")
+
+    model_results = list(existing_state.get("models") or [])
+    if install_models:
+        model_results = []
+        for position, model in enumerate(config["models"], start=1):
+            print(
+                f"=== Model {position}/{len(config['models'])}: "
+                f"{model.get('customFilename') or model.get('name')} ==="
+            )
+            model_results.append(download_model(model, comfy_dir))
+
     state = {
         "profile": config["name"],
         "comfyuiVersion": config["comfyuiVersion"],
         "nodes": node_results,
         "models": model_results,
     }
-    (state_dir / "install-state.json").write_text(
+    state_file.write_text(
         json.dumps(state, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    (state_dir / "INSTALL_COMPLETE").write_text("ok\n", encoding="utf-8")
-    print("All configured nodes and models are installed.")
+    if install_models:
+        (state_dir / "INSTALL_COMPLETE").write_text("ok\n", encoding="utf-8")
+
+    if args.phase == "nodes":
+        print("All configured custom nodes are installed.")
+    elif args.phase == "models":
+        print("All configured models are installed.")
+    else:
+        print("All configured nodes and models are installed.")
     return 0
 
 

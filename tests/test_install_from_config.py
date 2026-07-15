@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import importlib.util
 import io
+import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -153,6 +155,102 @@ class FileValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "40-character SHA"):
             installer.validate_config(config)
 
+
+class InstallationPhaseTests(unittest.TestCase):
+    def profile(self) -> dict:
+        return {
+            "name": "phase-test",
+            "comfyuiVersion": "v0.27.0",
+            "models": [
+                {
+                    "name": "model",
+                    "url": "https://example.com/model.bin",
+                    "destinationPath": "models/checkpoints",
+                    "customFilename": "model.bin",
+                }
+            ],
+            "customNodes": [
+                {"reference": "https://github.com/owner/test-node"}
+            ],
+        }
+
+    def test_nodes_phase_does_not_download_models(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            config_path = root / "config.json"
+            config_path.write_text(json.dumps(self.profile()), encoding="utf-8")
+            state_dir = root / "state"
+            argv = [
+                "install_from_config.py",
+                "--config",
+                str(config_path),
+                "--comfy-dir",
+                str(root / "ComfyUI"),
+                "--phase",
+                "nodes",
+            ]
+            node_result = {
+                "repository": "https://github.com/owner/test-node",
+                "directory": str(root / "ComfyUI/custom_nodes/test-node"),
+                "commit": "a" * 40,
+            }
+            with mock.patch.object(sys, "argv", argv), mock.patch.dict(
+                os.environ, {"STATE_DIR": str(state_dir)}, clear=False
+            ), mock.patch.object(
+                installer, "install_node", return_value=node_result
+            ) as install_node, mock.patch.object(
+                installer, "download_model"
+            ) as download_model:
+                self.assertEqual(installer.main(), 0)
+
+            install_node.assert_called_once()
+            download_model.assert_not_called()
+            self.assertTrue((state_dir / "NODES_COMPLETE").exists())
+            self.assertFalse((state_dir / "INSTALL_COMPLETE").exists())
+
+    def test_models_phase_preserves_node_state(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            config_path = root / "config.json"
+            config_path.write_text(json.dumps(self.profile()), encoding="utf-8")
+            state_dir = root / "state"
+            state_dir.mkdir()
+            previous_node = {"repository": "preserved-node", "commit": "b" * 40}
+            (state_dir / "install-state.json").write_text(
+                json.dumps({"nodes": [previous_node], "models": []}),
+                encoding="utf-8",
+            )
+            argv = [
+                "install_from_config.py",
+                "--config",
+                str(config_path),
+                "--comfy-dir",
+                str(root / "ComfyUI"),
+                "--phase",
+                "models",
+            ]
+            model_result = {
+                "url": "https://example.com/model.bin",
+                "path": str(root / "ComfyUI/models/checkpoints/model.bin"),
+                "bytes": 1,
+                "status": "downloaded",
+            }
+            with mock.patch.object(sys, "argv", argv), mock.patch.dict(
+                os.environ, {"STATE_DIR": str(state_dir)}, clear=False
+            ), mock.patch.object(
+                installer, "install_node"
+            ) as install_node, mock.patch.object(
+                installer, "download_model", return_value=model_result
+            ) as download_model:
+                self.assertEqual(installer.main(), 0)
+
+            install_node.assert_not_called()
+            download_model.assert_called_once()
+            state = json.loads(
+                (state_dir / "install-state.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(state["nodes"], [previous_node])
+            self.assertTrue((state_dir / "INSTALL_COMPLETE").exists())
 
 if __name__ == "__main__":
     unittest.main()

@@ -87,8 +87,13 @@ the selected profiles do not require that provider.
 
 Jupyter should open exactly as it does in the original official template.
 The ComfyUI application card is present immediately on a newly created
-instance, but it becomes usable only after provisioning starts ComfyUI on port
-`8188`.
+instance. Provisioning installs ComfyUI and the selected custom nodes first,
+starts the server, verifies its health endpoint, and only then downloads model
+files. The UI is therefore available while the large model download continues.
+During the initial Python and custom-node installation, the same application URL
+shows an auto-refreshing `ComfyUI is installing` page instead of a persistent
+Cloudflare 502. It switches to ComfyUI after the provisioning log reports
+`ComfyUI is ready`.
 
 Follow provisioning with:
 
@@ -96,7 +101,8 @@ Follow provisioning with:
 tail -f /workspace/comfyui-cloud/logs/provision.log
 ```
 
-After provisioning completes:
+The check command reports whether the UI is ready and whether model downloads
+have completed:
 
 ```bash
 bash /workspace/comfyui-cloud/runtime/check-install.sh

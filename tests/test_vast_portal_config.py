@@ -42,6 +42,32 @@ class VastPortalConfigTests(unittest.TestCase):
         self.assertIn("comfy-listen-host", check)
         self.assertIn('HEALTH_HOST="[::1]"', check)
 
+    def test_vast_starts_comfyui_before_downloading_models(self):
+        provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
+            encoding="utf-8"
+        )
+
+        nodes_phase = provision.index("export INSTALL_PHASE=nodes")
+        start = provision.index('"${STATE_DIR}/runtime/start-comfyui.sh"')
+        models_phase = provision.index("--phase models")
+        self.assertLess(nodes_phase, start)
+        self.assertLess(start, models_phase)
+
+    def test_vast_serves_installation_page_before_provisioning(self):
+        provision = (ROOT / "providers" / "vastai" / "provision.sh").read_text(
+            encoding="utf-8"
+        )
+        start = (ROOT / "common" / "start-comfyui.sh").read_text(
+            encoding="utf-8"
+        )
+
+        status_server = provision.index("python -m http.server 8188")
+        package_install = provision.index("apt-get update")
+        self.assertLess(status_server, package_install)
+        self.assertIn("status-server.pid", provision)
+        self.assertIn("status-server.pid", start)
+        self.assertIn('kill "${STATUS_PID}"', start)
+
 
 if __name__ == "__main__":
     unittest.main()

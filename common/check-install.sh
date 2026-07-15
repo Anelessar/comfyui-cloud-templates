@@ -15,8 +15,12 @@ else
   HEALTH_HOST="127.0.0.1"
 fi
 test -f "${COMFY_DIR}/main.py"
-test -f "${STATE_DIR}/INSTALL_COMPLETE"
 test -f "${STATE_DIR}/install-state.json"
+if [[ -f "${STATE_DIR}/INSTALL_COMPLETE" ]]; then
+  echo "All configured models are installed."
+else
+  echo "ComfyUI is available while model downloads are still in progress."
+fi
 echo "Disk usage:"; du -sh "${COMFY_DIR}" "${WORKSPACE}/.cache" 2>/dev/null || true
 echo; echo "ComfyUI process:"; pgrep -af "python.*main.py" || true
 echo
